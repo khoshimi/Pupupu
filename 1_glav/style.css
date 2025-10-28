@@ -1,0 +1,445 @@
+@font-face {
+    font-family: 'osn';
+    src: url('TS Remarker.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Zag';
+    src: url('Vetrino.otf') format('opentype');
+}
+body{
+    background-color: #FEF4E8;
+    width: 100%;
+}
+header{
+    background-color: #8CA273;
+    height: 137px;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 91px;
+}
+a{
+    color: #FEF4E8;
+    font-size: 48px;
+    font-family: Zag;
+    margin-top: 30px;
+    text-decoration: none;
+}
+.fon{
+    width: 100%;
+    height: 624px;
+    background: url(fon\ \(2\).png) no-repeat;
+    padding-top: 75px;
+    padding-left: 18px;
+}
+.h_1{
+    font-family: Zag;
+    font-size: 56px;
+    color: #5D3529;
+}
+.podzag{
+    font-family: osn;
+    font-size: 40px;
+    color: #5D3529;
+}
+.kanopka{
+    width: 516px;
+    height: 87px;
+    border-radius: 13px;
+    background-color: #F1A9B7;
+    border: #F1A9B7;
+    color: #FEF4E8;
+    font-size: 36px;
+    font-family: osn;
+}
+.priv{
+    font-size: 36px;
+    font-family: osn;
+    color: #5D3529;
+    text-align: center;
+    margin-left: 93px;
+    margin-right: 93px;
+}
+.nach_1{
+    font-size: 64px;
+    font-family: Zag;
+    color: #5D3529;
+    margin-left: 18px;
+}
+.hr_1{
+    height: 9px;
+    width: 864px;
+    text-align: left;
+    background-color: #F1A9B7;
+    border-top-right-radius: 60px;
+    border-bottom-right-radius: 60px;
+    margin-left: -90px;
+    margin-top: -60px;
+}
+.text_1{
+    font-size: 36px;
+    font-family: osn;
+    color: #5D3529;
+    text-align: left;
+    margin-left: 93px;
+    margin-right: 90px;
+    margin-top: 64px;
+}
+.nach_2{
+    font-size: 64px;
+    font-family: Zag;
+    color: #5D3529;
+    text-align: right;
+    margin-right: 18px;
+}
+.hr_2{
+    height: 9px;
+    width: 864px;
+    text-align: left;
+    background-color: #F1A9B7;
+    border-top-left-radius: 60px;
+    border-bottom-left-radius: 60px;
+    margin-right: 0px;
+    margin-top: -60px;
+}
+.text_2{
+    font-size: 36px;
+    font-family: osn;
+    color: #5D3529;
+    text-align: right;
+    margin-right: 93px;
+    margin-top: 64px;
+}
+.zag_2{
+    font-size: 64px;
+    font-family: Zag;
+    color: #5D3529;
+    text-align: center;
+}
+.hr_3{
+    height: 9px;
+    background-color: #F1A9B7;
+    margin-top: -60px;
+    margin-bottom: 30px;
+}
+.carousel-container {
+    width: 800px;
+    margin: 50px auto;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .carousel-track {
+    overflow: hidden;
+  }
+  
+  .carousel-list {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .carousel-slide {
+    width: 200px;
+    height: 350px;
+    margin: 0 10px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    transform: scale(0.8);
+    opacity: 0.6;
+    cursor: pointer;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  
+  .carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .carousel-slide.active {
+    transform: scale(1.2);
+    opacity: 1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
+  
+  .carousel-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #F1A9B7;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+  
+  .pagination-dot.active {
+    background-color: #BF4069;
+  }
+  .gd{
+    display: flex;
+    margin-left: 93px;
+    margin-right: 93px;
+    margin-top: 53px;
+  }
+  .zgd{
+    font-family: Zag;
+    font-size: 64px;
+    color: #BF4069;
+    margin-top: 0px;
+  }
+  .ogd{
+    font-family: osn;
+    font-size: 40px;
+    color: #5D3529;
+    padding-top: 65px;
+    padding-bottom: 74px;
+  }
+  .kanopkakat{
+    width: 209px;
+    height: 77px;
+    border-radius: 12px;
+    background-color: #F1A9B7;
+    border: #F1A9B7;
+    color: #FEF4E8;
+    font-size: 36px;
+    font-family: osn;
+  }
+.op_gd{
+    margin-left: 30px;
+}
+.wb{
+    display: flex;
+    margin-left: 93px;
+    margin-right: 93px;
+    margin-top: 53px;
+  }
+  .zwb{
+    font-family: Zag;
+    font-size: 64px;
+    color: #BF4069;
+    margin-top: 0px;
+    
+  }
+  .owb{
+    font-family: osn;
+    font-size: 40px;
+    color: #5D3529;
+    padding-top: 50px;
+    padding-bottom: 40px;
+  }
+  .kanopkakat{
+    width: 209px;
+    height: 77px;
+    border-radius: 12px;
+    background-color: #F1A9B7;
+    border: #F1A9B7;
+    color: #FEF4E8;
+    font-size: 36px;
+    font-family: osn;
+  }
+.op_wb{
+    margin-right: 30px;
+    text-align: right;
+}
+.il{
+  display: flex;
+  margin-left: 93px;
+  margin-right: 93px;
+  margin-top: 53px;
+}
+.zil{
+  font-family: Zag;
+  font-size: 64px;
+  color: #BF4069;
+  margin-top: 0px;
+}
+.oil{
+  font-family: osn;
+  font-size: 40px;
+  color: #5D3529;
+  padding-top: 20px;
+  padding-bottom: 30px;
+}
+.kanopkakat{
+  width: 209px;
+  height: 77px;
+  border-radius: 12px;
+  background-color: #F1A9B7;
+  border: #F1A9B7;
+  color: #FEF4E8;
+  font-size: 36px;
+  font-family: osn;
+}
+.op_il{
+  margin-left: 30px;
+}
+.hr_pod{
+  height: 9px;
+  width: 100%;
+  background-color: #F1A9B7;
+  margin-bottom: 96px;
+  margin-top: 96px;
+}
+/*  Общие стили для мобильных устройств */
+@media (max-width: 767px) { /*  Укажите ширину, при которой начинать адаптацию  */
+
+  body {
+    padding: 0; /*  Убираем отступы  */
+  }
+
+  /*  Header  */
+  header {
+    flex-direction: column; /*  Stack elements vertically  */
+    align-items: center; /*  Center items horizontally  */
+    padding: 10px;
+    height: auto; /*  Allow height to adjust  */
+  }
+
+  header img {
+    width: 80px; /*  Adjust logo size  */
+    margin-bottom: 10px;
+  }
+
+  header a {
+    font-size: 24px; /*  Reduce font size for links  */
+    margin: 5px 0; /*  Add spacing between links  */
+  }
+
+  /*  "fon" section  */
+  .fon {
+    background-image: url(fon\ \(2\).png); /*  Укажите путь к фоновому изображению для мобильных */
+    background-size: cover; /*  Cover the entire area */
+    background-position: center; /*  Center the image  */
+    padding: 20px;
+    height: auto; /*  Adjust height dynamically  */
+  }
+
+  .h_1 {
+    font-size: 32px; /*  Reduce heading size  */
+    text-align: center; /*  Center text  */
+  }
+
+  .podzag {
+    font-size: 20px;
+    text-align: center; /*  Center text  */
+  }
+
+  .kanopka {
+    width: 100%; /*  Make button full width  */
+    max-width: 300px; /*  Limit button width  */
+    height: 60px;
+    font-size: 24px;
+    margin-top: 20px;
+  }
+
+  /*  "priv" section  */
+  .priv {
+    font-size: 18px;
+    margin: 20px;
+    text-align: center;
+  }
+
+  /*  "nach_1" и  hr_1 section  */
+  .nach_1, .nach_2 {
+    font-size: 32px;
+    margin: 15px;
+    text-align: center;
+  }
+
+  .hr_1, .hr_2, .hr_3 {
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  /*  "text_1" и "text_2" sections  */
+  .text_1, .text_2 {
+    font-size: 18px;
+    margin: 20px;
+    text-align: left; /* Или center, в зависимости от дизайна  */
+  }
+
+    /* Carousel */
+    .carousel-container {
+        width: 90%;
+        margin: 20px auto;
+    }
+
+    .carousel-slide {
+        width: 150px; /*  Adjust slide width  */
+        height: 250px; /*  Adjust slide height  */
+        margin: 0 5px; /*  Adjust margin  */
+    }
+
+    .carousel-slide.active {
+        transform: scale(1.1);
+    }
+
+  /* "zag_2" section (если есть) */
+  .zag_2 {
+    font-size: 32px;
+    text-align: center;
+    margin: 20px;
+  }
+
+  /*  Категории  */
+
+  .gd, .wb, .il {
+    flex-direction: column; /* Stack elements vertically */
+    margin: 20px;
+  }
+
+  .gd img, .wb img, .il img {
+    width: 100%; /* Make images full width */
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .op_gd, .op_wb, .op_il {
+    margin-left: 0;
+    margin-right: 0;
+    text-align: left;
+  }
+
+  .zgd, .zwb, .zil {
+    font-size: 32px;
+    text-align: left;
+  }
+
+  .ogd, .owb, .oil {
+    font-size: 18px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .kanopkakat {
+    width: 100%;
+    max-width: 250px;
+    height: 50px;
+    font-size: 20px;
+    margin: 10px 0;
+  }
+
+  .hr_pod {
+    margin: 40px 0;
+  }
+
+}
+footer{
+  text-align: right;
+  display: grid;
+  margin: 5%;
+}
+footer a{
+  color: #5D3529;
+}

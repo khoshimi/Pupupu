@@ -1,0 +1,128 @@
+@font-face {
+    font-family: 'osn';
+    src: url('TS Remarker.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Zag';
+    src: url('Vetrino.otf') format('opentype');
+}
+body{
+    background-color: #FEF4E8;
+    width: 100%;
+}
+header{
+    background-color: #8CA273;
+    height: 137px;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 91px;
+}
+a{
+    color: #FEF4E8;
+    font-size: 48px;
+    font-family: Zag;
+    margin-top: 30px;
+    text-decoration: none;
+}
+.fon{
+    width: 1660px;
+    height: 624px;
+    background: url(fon_soob.png) no-repeat;
+    padding-top: 201px;
+    padding-left: 18px;
+}
+.h_1{
+    font-family: Zag;
+    font-size: 56px;
+    color: #5D3529;
+}
+.podzag{
+    font-family: osn;
+    font-size: 40px;
+    color: #5D3529;
+    
+}
+.nach_1{
+    font-size: 64px;
+    font-family: Zag;
+    color: #5D3529;
+    margin-left: 18px;
+    margin-top: -80px;
+}
+.hr_1{
+    height: 9px;
+    width: 864px;
+    text-align: left;
+    background-color: #F1A9B7;
+    border-top-right-radius: 60px;
+    border-bottom-right-radius: 60px;
+    margin-left: -90px;
+    margin-top: -60px;
+}
+.priv{
+    font-size: 40px;
+    font-family: osn;
+    color: #5D3529;
+    text-align: left;
+    margin-left: 91px;
+    margin-right: 91px;
+}
+.nach_2{
+    font-size: 64px;
+    font-family: Zag;
+    color: #5D3529;
+    margin-left: 18px;
+    margin-bottom: 0px;
+}
+.diz{
+    display: flex;
+    justify-content: space-between;
+    width: 1029px;
+}
+.hud{
+    display: flex;
+    justify-content: space-between;
+    width: 1029px;
+}
+.pigvin{
+    margin-top: 45px;
+}
+.idem{
+    width: 455px;
+    height: 996px;
+    background: url(идеи.png) no-repeat;
+    text-align: center;
+    padding-top: 779px;
+    margin-bottom: -779px;
+}
+.kat{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 40px;
+    margin-right: 91px;
+}
+.s_idem{
+    color: #BF4069;
+    font-family: Zag;
+    font-size: 48px;
+    text-decoration: underline;
+}
+.per{
+    color: #5D3529;
+    font-family: Zag;
+    font-size: 48px;
+}
+.hr_pod{
+    height: 9px;
+    width: 100%;
+    background-color: #F1A9B7;
+}
+footer{
+  text-align: right;
+  display: grid;
+  margin: 5%;
+}
+footer a{
+  color: #5D3529;
+}

@@ -1,0 +1,86 @@
+@font-face {
+    font-family: 'osn';
+    src: url('TS Remarker.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Zag';
+    src: url('Vetrino.otf') format('opentype');
+}
+body{
+    background-color: #FEF4E8;
+    width: 100%;
+}
+header{
+    background-color: #8CA273;
+    height: 137px;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 91px;
+}
+a{
+    color: #FEF4E8;
+    font-size: 48px;
+    font-family: Zag;
+    margin-top: 30px;
+    text-decoration: none;
+}
+.inputbox{
+    position: relative;
+    margin: 30px 0;
+    width: 955px;
+    border-bottom: 6px solid #EBA3B9;
+}
+.inputbox label{
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    color: #5D3529;
+    font-size: 48px;
+    pointer-events: none;
+    transition: 0.5s;
+    font-family: "osn";
+}
+input:focus ~ label{
+    top: -5px;
+}
+input :valid ~ label{
+    top: -5px;
+}
+.inputbox input{
+    width: 100%;
+    height: 50px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    padding: 0 35px 0 5px;
+    color: #5D3529;
+}
+.inputbox ion-icon{
+    position: absolute;
+    right: 8px;
+    color: #5D3529;
+    font-size: 1.2em;
+    top: 20px;
+}
+.profil{
+    display: flex;
+    align-items: center;
+    margin: 5%;
+}
+.prof_img{
+    margin-right: 5%;
+}
+.dob{
+    margin: 5%;
+}
+footer{
+  text-align: right;
+  display: grid;
+  margin: 5%;
+}
+footer a{
+  color: #5D3529;
+}
