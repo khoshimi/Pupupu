@@ -12,32 +12,83 @@
         <a href="glavnaya.html">Главная</a>
         <a href="soob.html">Форумы</a>
         <a href="mk.html">МК</a>
-        <a href="prof.html">Профиль</a>
+        <a href="reg.html">Профиль</a>
     </header>
     <img src="7_gal_gd\баннер.png" alt="" class="fon">
-    <div class="str">
-        <img src="7_gal_gd\1.1.png" alt="">
-        <img src="7_gal_gd\1.2.png" alt="">
-        <img src="7_gal_gd\1.3.png" alt="">
-        <img src="7_gal_gd\1.4.png" alt="">
-    </div>
-    <div class="str">
-        <img src="7_gal_gd\2.1.png" alt="">
-        <img src="7_gal_gd\2.2.png" alt="">
-        <img src="7_gal_gd\2.3.png" alt="">
-        <img src="7_gal_gd\2.4.png" alt="">
-    </div>
-    <div class="str">
-        <img src="7_gal_gd\3.1.png" alt="">
-        <img src="7_gal_gd\3.2.png" alt="">
-        <img src="7_gal_gd\3.3.png" alt="">
-        <img src="7_gal_gd\3.4.png" alt="">
+    <div id="galleryContainer" class="gallery-container">
+        <!-- Работы будут загружены сюда через JavaScript -->
     </div>
     <footer>
         <a href="glavnaya.html">Главная</a>
         <a href="soob.html">Форумы</a>
         <a href="mk.html">МК</a>
-        <a href="prof.html">Профиль</a>
+        <a href="reg.html">Профиль</a>
     </footer>
+    
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/api';
+        const GALLERY_CODE = 'gd';
+        
+        async function loadGalleryWorks() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/works/gallery/${GALLERY_CODE}`);
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки работ');
+                }
+                const works = await response.json();
+                displayWorks(works);
+            } catch (error) {
+                console.error('Ошибка загрузки работ:', error);
+                document.getElementById('galleryContainer').innerHTML = '<p style="text-align: center; padding: 40px; color: #5D3529; font-size: 24px;">Ошибка загрузки работ. Убедитесь, что сервер запущен.</p>';
+            }
+        }
+        
+        function displayWorks(works) {
+            const container = document.getElementById('galleryContainer');
+            
+            // Статические изображения для галереи ГД
+            const staticImages = [
+                ['7_gal_gd\\1.1.png', '7_gal_gd\\1.2.png', '7_gal_gd\\1.3.png', '7_gal_gd\\1.4.png'],
+                ['7_gal_gd\\2.1.png', '7_gal_gd\\2.2.png', '7_gal_gd\\2.3.png', '7_gal_gd\\2.4.png'],
+                ['7_gal_gd\\3.1.png', '7_gal_gd\\3.2.png', '7_gal_gd\\3.3.png', '7_gal_gd\\3.4.png']
+            ];
+            
+            let html = '';
+            
+            // Сначала показываем статические изображения
+            staticImages.forEach(row => {
+                html += '<div class="str">';
+                row.forEach(imgPath => {
+                    html += `<img src="${imgPath}" alt="">`;
+                });
+                html += '</div>';
+            });
+            
+            // Затем добавляем работы из БД
+            if (works.length > 0) {
+                for (let i = 0; i < works.length; i += 4) {
+                    const rowWorks = works.slice(i, i + 4);
+                    html += '<div class="str">';
+                    rowWorks.forEach(work => {
+                        if (work.image_url) {
+                            html += `<a href="work.html?id=${work.id}"><img src="${work.image_url}" alt="${escapeHtml(work.title)}" title="${escapeHtml(work.title)}"></a>`;
+                        }
+                    });
+                    html += '</div>';
+                }
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Загружаем работы при загрузке страницы
+        document.addEventListener('DOMContentLoaded', loadGalleryWorks);
+    </script>
 </body>
 </html>

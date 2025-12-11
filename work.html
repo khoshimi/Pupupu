@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Работа</title>
+    <link rel="stylesheet" href="6_prof/style.css">
+    <style>
+        .work-detail-container {
+            max-width: 1200px;
+            margin: 5% auto;
+            padding: 40px;
+            background-color: #FFFFFF;
+            border: 4px solid #EBA3B9;
+            border-radius: 20px;
+        }
+        
+        .work-detail-image {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .work-detail-title {
+            color: #5D3529;
+            font-family: 'Zag';
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .work-detail-description {
+            color: #5D3529;
+            font-family: 'osn';
+            font-size: 32px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-align: justify;
+        }
+        
+        .work-detail-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .work-detail-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #EBA3B9;
+        }
+        
+        .work-detail-gallery {
+            font-family: 'osn';
+            font-size: 28px;
+            color: #5D3529;
+        }
+        
+        .work-detail-author {
+            font-family: 'osn';
+            font-size: 28px;
+            color: #5D3529;
+        }
+        
+        .back-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #8CA273;
+            color: #FEF4E8;
+            text-decoration: none;
+            border-radius: 10px;
+            font-family: 'Zag';
+            font-size: 32px;
+            margin-top: 30px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-button:hover {
+            background-color: #7a8f63;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #5D3529;
+            font-family: 'osn';
+            font-size: 36px;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #BF4069;
+            font-family: 'osn';
+            font-size: 36px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="ob/logo (3).png" alt="Логотип">
+        <a href="glavnaya.html">Главная</a>
+        <a href="soob.html">Форумы</a>
+        <a href="mk.html">МК</a>
+        <a href="prof.html">Профиль</a>
+    </header>
+    
+    <div id="workDetailContainer" class="work-detail-container">
+        <div class="loading">Загрузка работы...</div>
+    </div>
+    
+    <footer>
+        <a href="glavnaya.html">Главная</a>
+        <a href="soob.html">Форумы</a>
+        <a href="mk.html">МК</a>
+        <a href="prof.html">Профиль</a>
+    </footer>
+    
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/api';
+        
+        // Получаем ID работы из URL параметров
+        const urlParams = new URLSearchParams(window.location.search);
+        const workId = urlParams.get('id');
+        
+        function getGalleryName(gallery) {
+            const galleryNames = {
+                'gd': 'ГД',
+                'il': 'ИЛ',
+                'wd': 'ВД',
+                'zj': 'ЗЖ'
+            };
+            return galleryNames[gallery] || gallery;
+        }
+        
+        function getGalleryUrl(gallery) {
+            const galleryUrls = {
+                'gd': 'g_gd.html',
+                'il': 'g_il.html',
+                'wd': 'g_wd.html',
+                'zj': 'g_zj.html'
+            };
+            return galleryUrls[gallery] || 'glavnaya.html';
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        async function loadWork() {
+            if (!workId) {
+                document.getElementById('workDetailContainer').innerHTML = 
+                    '<div class="error">Работа не найдена. ID не указан.</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/works/${workId}`);
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки работы');
+                }
+                const work = await response.json();
+                displayWork(work);
+            } catch (error) {
+                console.error('Ошибка загрузки работы:', error);
+                document.getElementById('workDetailContainer').innerHTML = 
+                    '<div class="error">Ошибка загрузки работы. Убедитесь, что сервер запущен.</div>';
+            }
+        }
+        
+        function displayWork(work) {
+            const container = document.getElementById('workDetailContainer');
+            
+            let html = '';
+            
+            if (work.image_url) {
+                html += `<img src="${work.image_url}" alt="${escapeHtml(work.title)}" class="work-detail-image">`;
+            }
+            
+            html += `<h1 class="work-detail-title">${escapeHtml(work.title)}</h1>`;
+            html += `<p class="work-detail-description">${escapeHtml(work.description)}</p>`;
+            
+            if (work.tags && work.tags.length > 0) {
+                html += '<div class="work-detail-tags">';
+                work.tags.forEach(tag => {
+                    html += `<span class="tag">${escapeHtml(tag.trim())}</span>`;
+                });
+                html += '</div>';
+            }
+            
+            html += '<div class="work-detail-info">';
+            html += `<div class="work-detail-gallery">Галерея: ${getGalleryName(work.gallery)}</div>`;
+            if (work.user_email) {
+                html += `<div class="work-detail-author">Автор: ${escapeHtml(work.user_email)}</div>`;
+            }
+            html += '</div>';
+            
+            html += `<a href="${getGalleryUrl(work.gallery)}" class="back-button">← Вернуться в галерею</a>`;
+            
+            container.innerHTML = html;
+        }
+        
+        // Загружаем работу при загрузке страницы
+        document.addEventListener('DOMContentLoaded', loadWork);
+    </script>
+    
+    <!-- Иконки -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

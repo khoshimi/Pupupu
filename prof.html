@@ -1,40 +1,135 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="6_prof\style.css">
+    <title>Профиль</title>
+    <link rel="stylesheet" href="6_prof/style.css">
 </head>
 <body>
     <header>
-        <img src="ob\logo (3).png" alt="/">
+        <img src="ob/logo (3).png" alt="Логотип">
         <a href="glavnaya.html">Главная</a>
         <a href="soob.html">Форумы</a>
         <a href="mk.html">МК</a>
         <a href="prof.html">Профиль</a>
     </header>
+    
     <div class="profil">
-        <img src="6_prof\проф.png" alt="" class="prof_img">
+        <div class="avatar-container">
+            <img id="profileAvatar" src="6_prof/проф.png" alt="Аватар" class="prof_img">
+            <label for="avatarInput" class="avatar-upload-btn" title="Изменить фото профиля">
+                <ion-icon name="camera-outline"></ion-icon>
+            </label>
+            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+        </div>
         <div class="prof_op">
             <div class="inputbox">
                 <ion-icon name="mail-outline"></ion-icon>
-                <input type="email" required>
-                <label for="">Email</label>
+                <input type="email" id="profileEmail" required readonly>
+                <label for="profileEmail">Email</label>
             </div>
             <div class="inputbox">
                 <ion-icon name="lock-closed-outline"></ion-icon>
-                <input type="password" required>
-                <label for="">Password</label>
+                <input type="password" id="profilePassword" required readonly>
+                <label for="profilePassword">Пароль</label>
             </div>
         </div>
     </div>
-    <a href="#"><img src="6_prof\доб.png" alt="" class="dob"></a>
+    
+    <a href="#" id="addWorkBtn"><img src="6_prof/доб.png" alt="Добавить" class="dob"></a>
+    
+    <!-- Модальное окно для добавления работы -->
+    <div id="workModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Добавить работу</h2>
+            <form id="workForm">
+                <div class="inputbox">
+                    <ion-icon name="document-text-outline"></ion-icon>
+                    <input type="text" id="workTitle" required>
+                    <label for="workTitle">Название работы</label>
+                </div>
+                <div class="inputbox">
+                    <ion-icon name="text-outline"></ion-icon>
+                    <textarea id="workDescription" required rows="4"></textarea>
+                    <label for="workDescription">Описание</label>
+                </div>
+                <div class="inputbox">
+                    <ion-icon name="pricetags-outline"></ion-icon>
+                    <input type="text" id="workTags" required placeholder="Теги через запятую">
+                    <label for="workTags">Теги</label>
+                </div>
+                <div class="inputbox">
+                    <ion-icon name="images-outline"></ion-icon>
+                    <input type="file" id="workImage" accept="image/*">
+                    <label for="workImage">Изображение работы</label>
+                </div>
+                <div class="inputbox">
+                    <ion-icon name="folder-outline"></ion-icon>
+                    <select id="workGallery" required>
+                        <option value="">Выберите галерею</option>
+                        <option value="gd">Галерея ГД</option>
+                        <option value="il">Галерея ИЛ</option>
+                        <option value="wd">Галерея ВД</option>
+                        <option value="zj">Галерея ЗЖ</option>
+                    </select>
+                    <label for="workGallery">Галерея</label>
+                </div>
+                <div id="imagePreview" class="image-preview" style="display: none;">
+                    <img id="previewImg" src="" alt="Предпросмотр">
+                    <button type="button" id="removeImage" class="remove-image-btn">Удалить изображение</button>
+                </div>
+                <button type="submit" class="submit-btn">Добавить работу</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Секция для отображения работ -->
+    <div class="works-section">
+        <h2 class="works-title">Мои работы</h2>
+        <div id="worksContainer" class="works-container">
+            <!-- Работы будут добавлены сюда через JavaScript -->
+        </div>
+    </div>
+    
     <footer>
         <a href="glavnaya.html">Главная</a>
         <a href="soob.html">Форумы</a>
         <a href="mk.html">МК</a>
         <a href="prof.html">Профиль</a>
     </footer>
+
+    <script src="prof.js"></script>
+    <script>
+        // Загружаем сохраненные данные при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedEmail = localStorage.getItem('userEmail');
+            const savedPassword = localStorage.getItem('userPassword');
+            
+            console.log('Загруженные данные:', savedEmail, savedPassword); // для отладки
+            
+            if (savedEmail) {
+                document.getElementById('profileEmail').value = savedEmail;
+                // Добавляем класс для поднятия label
+                document.getElementById('profileEmail').classList.add('has-value');
+            }
+            
+            if (savedPassword) {
+                document.getElementById('profilePassword').value = savedPassword;
+                document.getElementById('profilePassword').classList.add('has-value');
+            }
+            
+            // Если данных нет, перенаправляем на страницу входа
+            if (!savedEmail) {
+                alert('Сначала войдите в систему');
+                window.location.href = 'reg.html';
+            }
+        });
+    </script>
+    
+    <!-- Иконки -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

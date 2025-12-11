@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'osn';
-    src: url('TS Remarker.otf') format('opentype');
+    src: url('TS Remarker Regular.otf') format('opentype');
 }
 
 @font-face {
@@ -33,4 +33,25 @@ a{
     display: flex;
     justify-content: space-between;
     margin: 3%;
+    gap: 2%;
+}
+.str img{
+    width: 22%;
+    height: 300px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s;
+    display: block;
+}
+.str img:hover{
+    transform: scale(1.05);
+}
+.str a{
+    width: 22%;
+    display: block;
+    text-decoration: none;
+    overflow: hidden;
+}
+.str a img{
+    width: 100%;
 }

@@ -1,44 +1,104 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>reg</title>
-    <link rel="stylesheet" href="5_reg\style.css">
+    <title>Вход</title>
+    <link rel="stylesheet" href="5_reg/style.css">
 </head>
 <body>
     <section>
         <div class="form-box">
             <div class="form-value">
-                <form action="">
-                    <h2>Login</h2>
+                <form id="loginForm">
+                    <h2>Вход</h2>
                     <div class="inputbox">
                         <ion-icon name="mail-outline"></ion-icon>
-                        <input type="email" required>
-                        <label for="">Email</label>
+                        <input type="email" id="email" required>
+                        <label for="email">Email</label>
                     </div>
                     <div class="inputbox">
                         <ion-icon name="lock-closed-outline"></ion-icon>
-                        <input type="password" required>
-                        <label for="">Password</label>
+                        <input type="password" id="password" required>
+                        <label for="password">Пароль</label>
                     </div>
                     <div class="forget">
-                        <label for=""><input type="checkbox" />запомнить меня</label>
-                        <label for="">
+                        <label><input type="checkbox" id="remember" />запомнить меня</label>
+                        <label>
                             <a href="#">...</a>
                         </label>
                     </div>
-                    <button><a href="prof.html">log in</a></button>
+                    <button type="submit">Войти</button>
                 </form>
             </div>
         </div>
     </section>
 
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/api';
+        
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Получаем данные из формы
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                // Пытаемся войти
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Сохраняем данные пользователя
+                    localStorage.setItem('userEmail', email);
+                    localStorage.setItem('userPassword', password);
+                    localStorage.setItem('userId', data.userId);
+                    
+                    // Переходим на страницу профиля
+                    window.location.href = 'prof.html';
+                } else {
+                    // Если пользователь не найден, пытаемся зарегистрировать
+                    if (data.error && data.error.includes('Неверный')) {
+                        const registerResponse = await fetch(`${API_BASE_URL}/register`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ email, password })
+                        });
+                        
+                        const registerData = await registerResponse.json();
+                        
+                        if (registerResponse.ok && registerData.success) {
+                            localStorage.setItem('userEmail', email);
+                            localStorage.setItem('userPassword', password);
+                            localStorage.setItem('userId', registerData.userId);
+                            alert('Регистрация прошла успешно!');
+                            window.location.href = 'prof.html';
+                        } else {
+                            alert(registerData.error || 'Ошибка регистрации');
+                        }
+                    } else {
+                        alert(data.error || 'Ошибка входа');
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Ошибка подключения к серверу. Убедитесь, что сервер запущен на http://localhost:3000');
+            }
+        });
+    </script>
+    
+    <!-- Иконки -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
-
-
-
-
-
-
