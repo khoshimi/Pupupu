@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const multer = require('multer');
 const cors = require('cors');
 const { initDatabase, User, Work, sequelize } = require('./models');
@@ -63,16 +64,35 @@ const serializeWork = (work) => {
   return { ...plain, tags, image_url };
 };
 
+const hashPassword = (password) => {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
+  return `${salt}:${hash}`;
+};
+
+const verifyPassword = (password, stored) => {
+  if (!stored) return false;
+  if (!stored.includes(':')) return stored === password;
+  const [salt, storedHash] = stored.split(':');
+  const hash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
+  try {
+    return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(storedHash, 'hex'));
+  } catch {
+    return false;
+  }
+};
+
 // Регистрация пользователя
 app.post('/api/register', async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email и пароль обязательны' });
+  if (!email || !password || password.length < 6) {
+    return res.status(400).json({ error: 'Email и пароль обязательны, пароль не короче 6 символов' });
   }
 
   try {
-    const user = await User.create({ email, password });
+    const passwordHash = hashPassword(password);
+    const user = await User.create({ email, password: passwordHash });
     res.json({
       success: true,
       userId: user.id,
@@ -96,8 +116,8 @@ app.post('/api/login', async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ where: { email, password } });
-    if (!user) {
+    const user = await User.findOne({ where: { email } });
+    if (!user || !verifyPassword(password, user.password)) {
       return res.status(401).json({ error: 'Неверный email или пароль' });
     }
 

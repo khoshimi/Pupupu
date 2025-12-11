@@ -1,14 +1,8 @@
-const fs = require('fs');
 const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
 
 // Путь к файлу базы
 const databaseFile = path.join(__dirname, '..', 'database.db');
-
-// Удаляем старую БД, чтобы пересоздать её с ORM
-if (fs.existsSync(databaseFile)) {
-  fs.unlinkSync(databaseFile);
-}
 
 // Настройка подключения SQLite через Sequelize
 const sequelize = new Sequelize({
@@ -125,7 +119,8 @@ Work.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 // Инициализация базы
 async function initDatabase() {
   await sequelize.authenticate();
-  await sequelize.sync({ force: true });
+  // Создаем таблицы, если их нет, без удаления существующих данных
+  await sequelize.sync();
 }
 
 module.exports = {
