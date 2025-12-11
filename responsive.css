@@ -1,0 +1,122 @@
+/* Базовые правила для адаптивности */
+:root {
+  --page-padding: min(5vw, 24px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+body {
+  margin: 0;
+}
+
+main,
+section,
+.container,
+.content,
+.wrapper,
+.page {
+  padding-left: var(--page-padding);
+  padding-right: var(--page-padding);
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding-left: var(--page-padding);
+  padding-right: var(--page-padding);
+}
+
+header img {
+  max-width: 160px;
+  height: auto;
+}
+
+header a {
+  text-decoration: none;
+  display: inline-block;
+  padding: 10px 14px;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+/* Сетки и ряды */
+.grid,
+.cards,
+.gallery-grid,
+.works-container,
+.row,
+.flex {
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  body {
+    font-size: 15px;
+  }
+
+  header a {
+    flex: 1 1 45%;
+    text-align: center;
+  }
+
+  .flex,
+  .row,
+  .cols {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .grid,
+  .cards,
+  .gallery-grid,
+  .works-container {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .form-box,
+  .modal-content {
+    width: 100% !important;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  section {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+}
+
+@media (max-width: 540px) {
+  body {
+    font-size: 14px;
+  }
+
+  header img {
+    max-width: 120px;
+  }
+
+  header a {
+    flex: 1 1 100%;
+  }
+}
