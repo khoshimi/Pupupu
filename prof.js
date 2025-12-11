@@ -1,8 +1,14 @@
 const API_BASE_URL = 'http://localhost:3000/api';
 
-// Функция для получения userId из localStorage
+const getStoredValue = (key) => sessionStorage.getItem(key) || localStorage.getItem(key);
+
+// Функция для получения userId из хранилища
 function getUserId() {
-    return localStorage.getItem('userId');
+    return getStoredValue('userId');
+}
+
+function getUserEmail() {
+    return getStoredValue('userEmail');
 }
 
 // Функция для загрузки работ из API
@@ -96,7 +102,7 @@ async function deleteWork(workId) {
 async function loadUserData() {
     const userId = getUserId();
     if (!userId) return;
-    
+
     try {
         const response = await fetch(`${API_BASE_URL}/user/id/${userId}`);
         if (response.ok) {
@@ -104,6 +110,15 @@ async function loadUserData() {
             if (user.avatar_url) {
                 document.getElementById('profileAvatar').src = user.avatar_url;
             }
+            if (user.email) {
+                document.getElementById('profileEmail').value = user.email;
+                document.getElementById('profileEmail').classList.add('has-value');
+                // Сохраняем email, чтобы он не пропал при перезагрузке
+                localStorage.setItem('userEmail', user.email);
+            }
+            // Не храним пароль, просто показываем заглушку
+            document.getElementById('profilePassword').value = '********';
+            document.getElementById('profilePassword').classList.add('has-value');
         }
     } catch (error) {
         console.error('Ошибка загрузки данных пользователя:', error);
@@ -164,7 +179,14 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'reg.html';
         return;
     }
-    
+
+    // Подставляем email, если сохранили его после логина
+    const storedEmail = getUserEmail();
+    if (storedEmail) {
+        document.getElementById('profileEmail').value = storedEmail;
+        document.getElementById('profileEmail').classList.add('has-value');
+    }
+
     // Загружаем данные пользователя (включая аватар)
     loadUserData();
     

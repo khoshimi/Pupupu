@@ -1,8 +1,8 @@
 const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
 
-// Путь к файлу базы
-const databaseFile = path.join(__dirname, '..', 'database.db');
+// Путь к файлу базы (плагин SQLite Viewer видит .sqlite)
+const databaseFile = path.join(__dirname, '..', 'BD.sqlite');
 
 // Настройка подключения SQLite через Sequelize
 const sequelize = new Sequelize({

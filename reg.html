@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход</title>
     <link rel="stylesheet" href="5_reg/style.css">
+    <link rel="stylesheet" href="responsive.css">
 </head>
 <body>
     <section>
@@ -36,59 +37,71 @@
 
     <script>
         const API_BASE_URL = 'http://localhost:3000/api';
-        
+
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            // Получаем данные из формы
-            const email = document.getElementById('email').value;
+
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
-            
+            const remember = document.getElementById('remember').checked;
+
+            if (!email || !password) {
+                alert('Введите email и пароль');
+                return;
+            }
+
             try {
+                // очищаем предыдущие сессии
+                localStorage.removeItem('userId');
+                localStorage.removeItem('userEmail');
+                sessionStorage.removeItem('userId');
+                sessionStorage.removeItem('userEmail');
+
                 // Пытаемся войти
-                const response = await fetch(`${API_BASE_URL}/login`, {
+                const loginResponse = await fetch(`${API_BASE_URL}/login`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
-                
-                const data = await response.json();
-                
-                if (response.ok && data.success) {
-                    // Сохраняем данные пользователя
-                    localStorage.setItem('userEmail', email);
-                    localStorage.setItem('userPassword', password);
-                    localStorage.setItem('userId', data.userId);
-                    
-                    // Переходим на страницу профиля
-                    window.location.href = 'prof.html';
-                } else {
-                    // Если пользователь не найден, пытаемся зарегистрировать
-                    if (data.error && data.error.includes('Неверный')) {
-                        const registerResponse = await fetch(`${API_BASE_URL}/register`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ email, password })
-                        });
-                        
-                        const registerData = await registerResponse.json();
-                        
-                        if (registerResponse.ok && registerData.success) {
-                            localStorage.setItem('userEmail', email);
-                            localStorage.setItem('userPassword', password);
-                            localStorage.setItem('userId', registerData.userId);
-                            alert('Регистрация прошла успешно!');
-                            window.location.href = 'prof.html';
-                        } else {
-                            alert(registerData.error || 'Ошибка регистрации');
-                        }
+
+                const loginData = await loginResponse.json();
+
+                if (loginResponse.ok && loginData.success) {
+                    if (remember) {
+                        localStorage.setItem('userId', loginData.userId);
+                        localStorage.setItem('userEmail', loginData.email);
                     } else {
-                        alert(data.error || 'Ошибка входа');
+                        sessionStorage.setItem('userId', loginData.userId);
+                        sessionStorage.setItem('userEmail', loginData.email);
                     }
+                    window.location.href = 'prof.html';
+                    return;
+                }
+
+                // Если авторизация не удалась, пробуем зарегистрировать
+                if (loginResponse.status === 401) {
+                    const registerResponse = await fetch(`${API_BASE_URL}/register`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const registerData = await registerResponse.json();
+
+                    if (registerResponse.ok && registerData.success) {
+                        if (remember) {
+                            localStorage.setItem('userId', registerData.userId);
+                            localStorage.setItem('userEmail', registerData.email);
+                        } else {
+                            sessionStorage.setItem('userId', registerData.userId);
+                            sessionStorage.setItem('userEmail', registerData.email);
+                        }
+                        window.location.href = 'prof.html';
+                    } else {
+                        alert(registerData.error || 'Ошибка регистрации');
+                    }
+                } else {
+                    alert(loginData.error || 'Ошибка входа');
                 }
             } catch (error) {
                 console.error('Ошибка:', error);

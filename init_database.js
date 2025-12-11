@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-const dbPath = path.join(__dirname, 'database.db');
+const dbPath = path.join(__dirname, 'BD.sqlite');
 
 // Удаляем существующую БД, если нужно пересоздать
 // Раскомментируйте следующую строку, если хотите пересоздать БД:

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль</title>
     <link rel="stylesheet" href="6_prof/style.css">
+    <link rel="stylesheet" href="responsive.css">
 </head>
 <body>
     <header>
@@ -102,28 +103,14 @@
 
     <script src="prof.js"></script>
     <script>
-        // Загружаем сохраненные данные при загрузке страницы
+        // Дополнительная проверка на случай, если скрипты профиля не смогли поставить email
         document.addEventListener('DOMContentLoaded', function() {
-            const savedEmail = localStorage.getItem('userEmail');
-            const savedPassword = localStorage.getItem('userPassword');
-            
-            console.log('Загруженные данные:', savedEmail, savedPassword); // для отладки
-            
+            const savedEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
             if (savedEmail) {
                 document.getElementById('profileEmail').value = savedEmail;
-                // Добавляем класс для поднятия label
                 document.getElementById('profileEmail').classList.add('has-value');
-            }
-            
-            if (savedPassword) {
-                document.getElementById('profilePassword').value = savedPassword;
+                document.getElementById('profilePassword').value = '********';
                 document.getElementById('profilePassword').classList.add('has-value');
-            }
-            
-            // Если данных нет, перенаправляем на страницу входа
-            if (!savedEmail) {
-                alert('Сначала войдите в систему');
-                window.location.href = 'reg.html';
             }
         });
     </script>
