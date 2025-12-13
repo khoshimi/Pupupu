@@ -15,10 +15,14 @@ const sequelize = new Sequelize({
 const User = sequelize.define(
   'User',
   {
-    id: {
+    id_users: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING,
@@ -32,70 +36,99 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    avatar_path: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-    },
   },
   {
     tableName: 'users',
     underscored: true,
-    timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: false,
+    timestamps: false,
   }
 );
 
-// Модель работы
-const Work = sequelize.define(
-  'Work',
+// Модель категории
+const Category = sequelize.define(
+  'Category',
   {
-    id: {
+    id_category: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    user_id: {
+    name: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+    },
+  },
+  {
+    tableName: 'category',
+    underscored: true,
+    timestamps: false,
+  }
+);
+
+// Модель тега
+const Tag = sequelize.define(
+  'Tag',
+  {
+    id_tags: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+    },
+  },
+  {
+    tableName: 'tags',
+    underscored: true,
+    timestamps: false,
+  }
+);
+
+// Модель арт-работы
+const Art = sequelize.define(
+  'Art',
+  {
+    id_art: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    id_users: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: User,
-        key: 'id',
+        key: 'id_users',
+      },
+    },
+    id_category: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: Category,
+        key: 'id_category',
       },
     },
     title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    image_url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     description: {
       type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    tags: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-      get() {
-        const raw = this.getDataValue('tags');
-        if (!raw) return [];
-        return raw.split(',').map((tag) => tag.trim()).filter(Boolean);
-      },
-      set(value) {
-        const normalized = Array.isArray(value) ? value.join(',') : value;
-        this.setDataValue('tags', normalized || '');
-      },
-    },
-    image_path: {
-      type: DataTypes.STRING,
       allowNull: true,
     },
     gallery: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: '',
     },
     created_at: {
       type: DataTypes.DATE,
@@ -104,7 +137,7 @@ const Work = sequelize.define(
     },
   },
   {
-    tableName: 'works',
+    tableName: 'art',
     underscored: true,
     timestamps: true,
     createdAt: 'created_at',
@@ -112,21 +145,63 @@ const Work = sequelize.define(
   }
 );
 
+// Связующая таблица арт-тегов
+const ArtTag = sequelize.define(
+  'ArtTag',
+  {
+    id_arttags: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    id_art: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Art,
+        key: 'id_art',
+      },
+    },
+    id_tags: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Tag,
+        key: 'id_tags',
+      },
+    },
+  },
+  {
+    tableName: 'arttags',
+    underscored: true,
+    timestamps: false,
+  }
+);
+
 // Связи
-User.hasMany(Work, { foreignKey: 'user_id', as: 'works' });
-Work.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(Art, { foreignKey: 'id_users', as: 'arts' });
+Art.belongsTo(User, { foreignKey: 'id_users', as: 'user' });
+
+Category.hasMany(Art, { foreignKey: 'id_category', as: 'arts' });
+Art.belongsTo(Category, { foreignKey: 'id_category', as: 'category' });
+
+Art.belongsToMany(Tag, { through: ArtTag, foreignKey: 'id_art', otherKey: 'id_tags', as: 'tags' });
+Tag.belongsToMany(Art, { through: ArtTag, foreignKey: 'id_tags', otherKey: 'id_art', as: 'arts' });
 
 // Инициализация базы
 async function initDatabase() {
   await sequelize.authenticate();
-  // Создаем таблицы, если их нет, без удаления существующих данных
-  await sequelize.sync();
+  // Синхронизируем схему: добавит недостающие столбцы/индексы без дропа данных
+  await sequelize.sync({ alter: true });
 }
 
 module.exports = {
   sequelize,
   User,
-  Work,
+  Category,
+  Tag,
+  Art,
+  ArtTag,
   initDatabase,
   databaseFile,
 };

@@ -4,7 +4,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const multer = require('multer');
 const cors = require('cors');
-const { initDatabase, User, Work, sequelize } = require('./models');
+const { initDatabase, User, Category, Tag, Art, ArtTag, sequelize } = require('./models');
 
 const app = express();
 const PORT = 3000;
@@ -57,11 +57,11 @@ const toTagsArray = (tags) => {
     .filter(Boolean);
 };
 
-const serializeWork = (work) => {
-  const plain = work.toJSON ? work.toJSON() : work;
-  const tags = Array.isArray(plain.tags) ? plain.tags : toTagsArray(plain.tags);
-  const image_url = plain.image_path ? `${API_BASE_URL}${plain.image_path}` : null;
-  return { ...plain, tags, image_url };
+const serializeArt = (art) => {
+  const plain = art.toJSON ? art.toJSON() : art;
+  const tags = plain.tags ? plain.tags.map((t) => t.name) : [];
+  const image_url = plain.image_url ? `${API_BASE_URL}${plain.image_url}` : null;
+  return { ...plain, id: plain.id_art, tags, image_url };
 };
 
 const hashPassword = (password) => {
@@ -84,19 +84,25 @@ const verifyPassword = (password, stored) => {
 
 // Регистрация пользователя
 app.post('/api/register', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, username } = req.body;
 
   if (!email || !password || password.length < 6) {
     return res.status(400).json({ error: 'Email и пароль обязательны, пароль не короче 6 символов' });
   }
 
+  const safeUsername =
+    (username && String(username).trim()) ||
+    (email && String(email).split('@')[0]) ||
+    'user';
+
   try {
     const passwordHash = hashPassword(password);
-    const user = await User.create({ email, password: passwordHash });
+    const user = await User.create({ email, password: passwordHash, username: safeUsername });
     res.json({
       success: true,
-      userId: user.id,
+      userId: user.id_users,
       email: user.email,
+      username: user.username,
       message: 'Пользователь успешно зарегистрирован',
     });
   } catch (err) {
@@ -123,8 +129,9 @@ app.post('/api/login', async (req, res) => {
 
     res.json({
       success: true,
-      userId: user.id,
+      userId: user.id_users,
       email: user.email,
+      username: user.username,
       message: 'Вход выполнен успешно',
     });
   } catch (err) {
@@ -137,11 +144,12 @@ app.get('/api/works/user/:userId', async (req, res) => {
   const userId = req.params.userId;
 
   try {
-    const works = await Work.findAll({
-      where: { user_id: userId },
+    const arts = await Art.findAll({
+      where: { id_users: userId },
+      include: [{ model: Tag, as: 'tags', through: { attributes: [] } }],
       order: [['created_at', 'DESC']],
     });
-    res.json(works.map(serializeWork));
+    res.json(arts.map(serializeArt));
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -152,15 +160,18 @@ app.get('/api/works/gallery/:gallery', async (req, res) => {
   const gallery = req.params.gallery;
 
   try {
-    const works = await Work.findAll({
+    const arts = await Art.findAll({
       where: { gallery },
-      include: [{ model: User, as: 'user', attributes: ['email'] }],
+      include: [
+        { model: User, as: 'user', attributes: ['email'] },
+        { model: Tag, as: 'tags', through: { attributes: [] } },
+      ],
       order: [['created_at', 'DESC']],
     });
 
-    const normalized = works.map((work) => {
-      const serialized = serializeWork(work);
-      return { ...serialized, user_email: work.user ? work.user.email : null };
+    const normalized = arts.map((art) => {
+      const serialized = serializeArt(art);
+      return { ...serialized, user_email: art.user ? art.user.email : null };
     });
 
     res.json(normalized);
@@ -174,16 +185,19 @@ app.get('/api/works/:workId', async (req, res) => {
   const workId = req.params.workId;
 
   try {
-    const work = await Work.findByPk(workId, {
-      include: [{ model: User, as: 'user', attributes: ['email'] }],
+    const art = await Art.findByPk(workId, {
+      include: [
+        { model: User, as: 'user', attributes: ['email'] },
+        { model: Tag, as: 'tags', through: { attributes: [] } },
+      ],
     });
 
-    if (!work) {
+    if (!art) {
       return res.status(404).json({ error: 'Работа не найдена' });
     }
 
-    const serialized = serializeWork(work);
-    return res.json({ ...serialized, user_email: work.user ? work.user.email : null });
+    const serialized = serializeArt(art);
+    return res.json({ ...serialized, user_email: art.user ? art.user.email : null });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -198,21 +212,32 @@ app.post('/api/works', upload.single('image'), async (req, res) => {
   }
 
   const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
-  const tagsValue = Array.isArray(tags) ? tags : toTagsArray(tags);
+  const tagsArray = Array.isArray(tags) ? tags : toTagsArray(tags);
 
   try {
-    const work = await Work.create({
-      user_id: userId,
+    // создаем/ищем теги
+    const tagRecords = await Promise.all(
+      tagsArray.map(async (tagName) => {
+        const [tag] = await Tag.findOrCreate({ where: { name: tagName } });
+        return tag;
+      })
+    );
+
+    const art = await Art.create({
+      id_users: userId,
       title,
       description,
-      tags: tagsValue,
-      image_path: imagePath,
+      image_url: imagePath,
       gallery,
     });
 
+    if (tagRecords.length) {
+      await art.setTags(tagRecords);
+    }
+
     res.json({
       success: true,
-      workId: work.id,
+      workId: art.id_art,
       message: 'Работа успешно добавлена',
     });
   } catch (err) {
@@ -225,20 +250,21 @@ app.delete('/api/works/:workId', async (req, res) => {
   const workId = req.params.workId;
 
   try {
-    const work = await Work.findByPk(workId);
+    const art = await Art.findByPk(workId, { include: [{ model: Tag, as: 'tags' }] });
 
-    if (!work) {
+    if (!art) {
       return res.status(404).json({ error: 'Работа не найдена' });
     }
 
-    if (work.image_path) {
-      const imagePath = path.join(__dirname, work.image_path);
+    if (art.image_url) {
+      const imagePath = path.join(__dirname, art.image_url);
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
       }
     }
 
-    await work.destroy();
+    await art.setTags([]);
+    await art.destroy();
 
     res.json({
       success: true,
