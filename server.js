@@ -10,7 +10,6 @@ const app = express();
 const PORT = 3000;
 const API_BASE_URL = `http://localhost:${PORT}`;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,7 +20,6 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Настройка multer для загрузки файлов
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadsDir);
@@ -203,7 +201,6 @@ app.get('/api/works/:workId', async (req, res) => {
   }
 });
 
-// Добавить работу
 app.post('/api/works', upload.single('image'), async (req, res) => {
   const { userId, title, description, tags, gallery } = req.body;
 
@@ -215,7 +212,6 @@ app.post('/api/works', upload.single('image'), async (req, res) => {
   const tagsArray = Array.isArray(tags) ? tags : toTagsArray(tags);
 
   try {
-    // создаем/ищем теги
     const tagRecords = await Promise.all(
       tagsArray.map(async (tagName) => {
         const [tag] = await Tag.findOrCreate({ where: { name: tagName } });

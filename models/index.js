@@ -1,10 +1,8 @@
 const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
 
-// Путь к файлу базы (плагин SQLite Viewer видит .sqlite)
 const databaseFile = path.join(__dirname, '..', 'BD.sqlite');
 
-// Настройка подключения SQLite через Sequelize
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: databaseFile,
@@ -188,11 +186,14 @@ Art.belongsTo(Category, { foreignKey: 'id_category', as: 'category' });
 Art.belongsToMany(Tag, { through: ArtTag, foreignKey: 'id_art', otherKey: 'id_tags', as: 'tags' });
 Tag.belongsToMany(Art, { through: ArtTag, foreignKey: 'id_tags', otherKey: 'id_art', as: 'arts' });
 
-// Инициализация базы
 async function initDatabase() {
   await sequelize.authenticate();
-  // Синхронизируем схему: добавит недостающие столбцы/индексы без дропа данных
-  await sequelize.sync({ alter: true });
+  await sequelize.sync({ force: false, alter: false });
+
+  const defaultCategories = ['ГД', 'ВБ', 'Традишка', 'ЦЖ'];
+  for (const name of defaultCategories) {
+    await Category.findOrCreate({ where: { name }, defaults: { name } });
+  }
 }
 
 module.exports = {
