@@ -17,28 +17,44 @@
     pointer-events: none;
     transition: 0.5s;
 }
-input:focus ~ label{
+input:focus ~ label,
+input:valid ~ label,
+input.has-value ~ label {
     top: -5px;
-}
-input :valid ~ label{
-    top: -5px;
+    font-size: 0.85em;
+    color: #BF4069;
 }
 .inputbox input{
     width: 100%;
     height: 50px;
-    background: transparent;
-    border: none;
-    outline: none;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
     font-size: 1em;
-    padding: 0 35px 0 5px;
+    padding: 0 35px 0 5px !important;
     color: #fff;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.inputbox input:focus{
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 .inputbox ion-icon{
     position: absolute;
     right: 8px;
     color: #fff;
     font-size: 1.2em;
-    top: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+
+.inputbox:focus-within ion-icon{
+    color: #BF4069;
 }
 *{
     margin: 0;
@@ -55,17 +71,52 @@ section{
     background-position: center;
     background-size: cover;
 }
+
+/* Переопределяем стили responsive.css для формы регистрации */
+section .inputbox {
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-bottom: 2px solid #fff !important;
+}
+
+section .inputbox:focus-within {
+    border: none !important;
+    border-bottom: 2px solid #BF4069 !important;
+}
+
+section .inputbox input[type="text"],
+section .inputbox input[type="email"],
+section .inputbox input[type="password"] {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 35px 0 5px !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+section .inputbox input[type="text"]:focus,
+section .inputbox input[type="email"]:focus,
+section .inputbox input[type="password"]:focus {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
 .form-box{
     position: relative;
     width: 400px;
-    height: 450px;
+    min-height: 580px;
+    padding: 30px 20px;
     background: transparent;
     border: 2px solid rgba(255, 255, 255, 0.5);
     border-radius: 20px;
     backdrop-filter: blur(15px);
     display: flex;
     justify-content: center;
-    justify-items: center;
+    align-items: flex-start;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 h2{
     font-size: 2em;
@@ -76,9 +127,14 @@ h2{
 }
 .inputbox{
     position: relative;
-    margin: 30px 0;
+    margin: 25px 0;
     width: 310px;
     border-bottom: 2px solid #fff;
+    transition: border-color 0.3s ease;
+}
+
+.inputbox:focus-within{
+    border-bottom-color: #BF4069;
 }
 .register{
     font-size: 0.9em;
@@ -91,8 +147,61 @@ h2{
     color: #fff;
     font-weight: 600;
 }
-.register p a :hover{
+.register p a:hover{
     text-decoration: underline;
+    color: #BF4069;
+}
+
+.form-toggle{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.form-toggle button{
+    width: auto;
+    padding: 8px 20px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: #fff;
+    font-size: 0.9em;
+    margin-top: 0;
+    border-radius: 20px;
+}
+
+.form-toggle button:hover{
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.form-toggle button.active{
+    background: rgba(191, 64, 105, 0.3);
+    border-color: #BF4069;
+    color: #fff;
+}
+
+.form-value{
+    width: 100%;
+}
+
+.hidden{
+    display: none;
+}
+
+.error-message{
+    color: #ff6b6b;
+    font-size: 0.85em;
+    margin-top: 5px;
+    text-align: center;
+    min-height: 20px;
+}
+
+.success-message{
+    color: #51cf66;
+    font-size: 0.85em;
+    margin-top: 5px;
+    text-align: center;
+    min-height: 20px;
 }
 .forget{
     display: flex;
@@ -101,15 +210,13 @@ h2{
     font-size: 0.9em;
     color: #fff;
 }
-.forget label :nth-child(2){
-    order: 1;
-}
 .forgetl label{
     display: flex;
     align-items: center;
 }
-.forget label input [type="checkbox"]{
+.forget label input[type="checkbox"]{
     margin-right: 6px;
+    cursor: pointer;
 }
 .forget label a{
     color: #fff;
@@ -125,4 +232,18 @@ button{
     cursor: pointer;
     font-size: 1em;
     font-weight: 600;
+    color: #BF4069;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+button:hover{
+    background: #BF4069;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(191, 64, 105, 0.3);
+}
+
+button:active{
+    transform: translateY(0);
 }

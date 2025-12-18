@@ -11,6 +11,23 @@ function getUserEmail() {
     return getStoredValue('userEmail');
 }
 
+// Функция для выхода из профиля
+function logout() {
+    // Очищаем все данные авторизации
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userEmail');
+    sessionStorage.removeItem('userId');
+    sessionStorage.removeItem('userEmail');
+    
+    // Обновляем ссылки на странице (если функция доступна)
+    if (typeof window.updateProfileLinks === 'function') {
+        window.updateProfileLinks();
+    }
+    
+    // Перенаправляем на страницу входа
+    window.location.href = 'reg.html';
+}
+
 // Функция для загрузки работ из API
 async function loadWorks() {
     const userId = getUserId();
@@ -219,12 +236,17 @@ document.addEventListener('DOMContentLoaded', function() {
         imageInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
+                // Добавляем класс для поднятия label
+                this.classList.add('has-value');
+                
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     previewImg.src = e.target.result;
                     imagePreview.style.display = 'block';
                 };
                 reader.readAsDataURL(file);
+            } else {
+                this.classList.remove('has-value');
             }
         });
     }
@@ -233,6 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (removeImageBtn) {
         removeImageBtn.addEventListener('click', function() {
             imageInput.value = '';
+            imageInput.classList.remove('has-value');
             imagePreview.style.display = 'none';
             previewImg.src = '';
         });
@@ -336,6 +359,17 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (error) {
                 console.error('Ошибка добавления работы:', error);
                 alert('Ошибка при добавлении работы: ' + error.message);
+            }
+        });
+    }
+    
+    // Обработка кнопки выхода
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                logout();
             }
         });
     }

@@ -190,7 +190,7 @@ async function initDatabase() {
   await sequelize.authenticate();
   await sequelize.sync({ force: false, alter: false });
 
-  const defaultCategories = ['ГД', 'ВБ', 'Традишка', 'ЦЖ'];
+  const defaultCategories = ['gd', 'wb', 'il', 'zj'];
   for (const name of defaultCategories) {
     await Category.findOrCreate({ where: { name }, defaults: { name } });
   }

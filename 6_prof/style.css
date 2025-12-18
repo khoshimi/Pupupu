@@ -36,28 +36,35 @@ a{
     margin: 30px 0;
     width: 955px;
     border-bottom: 6px solid #EBA3B9;
+    padding-top: 5px;
 }
 
 .inputbox label{
     position: absolute;
     top: 50%;
-    left: 5px;
+    left: 15px;
     transform: translateY(-50%);
     color: #5D3529;
     font-size: 48px;
     pointer-events: none;
-    transition: 0.5s;
+    transition: all 0.3s ease;
     font-family: "osn";
+    background: #FEF4E8;
+    padding: 0 8px;
+    z-index: 1;
 }
 
 .inputbox input:focus ~ label,
 .inputbox input.has-value ~ label,
 .inputbox input:valid ~ label,
 .inputbox textarea:focus ~ label,
-.inputbox textarea.has-value ~ label {
-    top: -20px;
-    font-size: 36px;
+.inputbox textarea.has-value ~ label,
+.inputbox select:focus ~ label,
+.inputbox select.has-value ~ label {
+    top: -12px;
+    font-size: 32px;
     color: #BF4069;
+    transform: translateY(0);
 }
 
 .inputbox input{
@@ -67,9 +74,17 @@ a{
     border: none;
     outline: none;
     font-size: 48px;
-    padding: 0 60px 0 15px;
+    padding: 0 60px 0 20px;
     color: #5D3529;
     font-family: "osn";
+    z-index: 2;
+    position: relative;
+}
+
+.inputbox input[type="file"] {
+    padding: 20px 60px 20px 20px;
+    cursor: pointer;
+    z-index: 2;
 }
 
 .inputbox ion-icon{
@@ -166,13 +181,16 @@ footer a{
 
 .modal-content {
     background-color: #FEF4E8;
-    margin: 5% auto;
-    padding: 40px;
-    border: 6px solid #EBA3B9;
-    border-radius: 20px;
+    margin: 3% auto;
+    padding: 50px 40px;
+    border: 4px solid #EBA3B9;
+    border-radius: 24px;
     width: 90%;
-    max-width: 1000px;
+    max-width: 900px;
     position: relative;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .close {
@@ -194,26 +212,45 @@ footer a{
 .modal-content h2 {
     color: #5D3529;
     font-family: 'Zag';
-    font-size: 48px;
-    margin-bottom: 30px;
+    font-size: 42px;
+    margin-bottom: 40px;
+    margin-top: 10px;
     text-align: center;
+    padding-right: 40px;
 }
 
 .modal-content .inputbox {
     width: 100%;
+    margin: 35px 0;
+    padding-top: 10px;
+}
+
+.modal-content .inputbox:first-of-type {
+    margin-top: 20px;
 }
 
 .modal-content .inputbox textarea {
     width: 100%;
-    min-height: 120px;
+    min-height: 150px;
     background: transparent;
     border: none;
     outline: none;
     font-size: 36px;
-    padding: 0 60px 0 15px;
+    padding: 20px 60px 20px 20px;
     color: #5D3529;
     font-family: "osn";
     resize: vertical;
+    z-index: 2;
+    position: relative;
+    line-height: 1.5;
+}
+
+.modal-content .inputbox textarea:focus ~ label,
+.modal-content .inputbox textarea.has-value ~ label {
+    top: -12px;
+    font-size: 32px;
+    color: #BF4069;
+    transform: translateY(0);
 }
 
 
@@ -223,16 +260,23 @@ footer a{
     background-color: #8CA273;
     color: #FEF4E8;
     border: none;
-    border-radius: 10px;
+    border-radius: 14px;
     font-size: 36px;
     font-family: 'Zag';
     cursor: pointer;
-    margin-top: 30px;
-    transition: background-color 0.3s;
+    margin-top: 40px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(140, 162, 115, 0.3);
 }
 
 .submit-btn:hover {
     background-color: #7a8f63;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(140, 162, 115, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
 }
 
 /* Секция работ */
@@ -359,12 +403,26 @@ footer a{
 
 /* Стили для input file */
 .inputbox input[type="file"] {
-    padding: 15px 60px 15px 15px;
+    padding: 20px 60px 20px 20px;
     cursor: pointer;
+    font-size: 36px;
+    z-index: 2;
+    position: relative;
+    color: #5D3529;
+    font-family: "osn";
 }
 
 .inputbox input[type="file"]::-webkit-file-upload-button {
     visibility: hidden;
+}
+
+.inputbox input[type="file"]:focus ~ label,
+.inputbox input[type="file"].has-value ~ label,
+.inputbox input[type="file"]:valid ~ label {
+    top: -12px;
+    font-size: 32px;
+    color: #BF4069;
+    transform: translateY(0);
 }
 
 /* Стили для select */
@@ -375,20 +433,23 @@ footer a{
     border: none;
     outline: none;
     font-size: 48px;
-    padding: 0 60px 0 15px;
+    padding: 0 60px 0 20px;
     color: #5D3529;
     font-family: "osn";
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    z-index: 2;
+    position: relative;
 }
 
 .inputbox select:focus ~ label,
 .inputbox select.has-value ~ label {
-    top: -20px;
-    font-size: 36px;
+    top: -12px;
+    font-size: 32px;
     color: #BF4069;
+    transform: translateY(0);
 }
 
 /* Предпросмотр изображения */
@@ -419,6 +480,32 @@ footer a{
 
 .remove-image-btn:hover {
     background-color: #EBA3B9;
+}
+
+/* Кнопка выхода */
+.logout-btn {
+    width: 300px;
+    padding: 15px 30px;
+    background-color: #BF4069;
+    color: #FEF4E8;
+    border: none;
+    border-radius: 14px;
+    font-size: 36px;
+    font-family: 'Zag';
+    cursor: pointer;
+    margin-top: 40px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(191, 64, 105, 0.3);
+}
+
+.logout-btn:hover {
+    background-color: #a83555;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(191, 64, 105, 0.4);
+}
+
+.logout-btn:active {
+    transform: translateY(0);
 }
 
 /* Адаптивность для модального окна */

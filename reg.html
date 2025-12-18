@@ -11,25 +11,50 @@
     <section>
         <div class="form-box">
             <div class="form-value">
-                <form id="loginForm">
+                <div class="form-toggle">
+                    <button type="button" id="loginToggle" class="active">Вход</button>
+                    <button type="button" id="registerToggle">Регистрация</button>
+                </div>
+
+                <!-- Форма входа -->
+                <form id="loginForm" class="auth-form">
                     <h2>Вход</h2>
                     <div class="inputbox">
                         <ion-icon name="mail-outline"></ion-icon>
-                        <input type="email" id="email" required>
-                        <label for="email">Email</label>
+                        <input type="email" id="loginEmail" required>
+                        <label for="loginEmail">Email</label>
                     </div>
                     <div class="inputbox">
                         <ion-icon name="lock-closed-outline"></ion-icon>
-                        <input type="password" id="password" required>
-                        <label for="password">Пароль</label>
+                        <input type="password" id="loginPassword" required>
+                        <label for="loginPassword">Пароль</label>
                     </div>
                     <div class="forget">
                         <label><input type="checkbox" id="remember" />запомнить меня</label>
-                        <label>
-                            <a href="#">...</a>
-                        </label>
                     </div>
+                    <div class="error-message" id="loginError"></div>
                     <button type="submit">Войти</button>
+                </form>
+
+                <form id="registerForm" class="auth-form hidden">
+                    <h2>Регистрация</h2>
+                    <div class="inputbox">
+                        <ion-icon name="person-outline"></ion-icon>
+                        <input type="text" id="registerUsername" required>
+                        <label for="registerUsername">Имя пользователя</label>
+                    </div>
+                    <div class="inputbox">
+                        <ion-icon name="mail-outline"></ion-icon>
+                        <input type="email" id="registerEmail" required>
+                        <label for="registerEmail">Email</label>
+                    </div>
+                    <div class="inputbox">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                        <input type="password" id="registerPassword" required minlength="6">
+                        <label for="registerPassword">Пароль (минимум 6 символов)</label>
+                    </div>
+                    <div class="error-message" id="registerError"></div>
+                    <button type="submit">Зарегистрироваться</button>
                 </form>
             </div>
         </div>
@@ -38,26 +63,65 @@
     <script>
         const API_BASE_URL = 'http://localhost:3000/api';
 
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // Переключение между формами
+        const loginToggle = document.getElementById('loginToggle');
+        const registerToggle = document.getElementById('registerToggle');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
 
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
+        loginToggle.addEventListener('click', () => {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            loginToggle.classList.add('active');
+            registerToggle.classList.remove('active');
+            clearErrors();
+        });
+
+        registerToggle.addEventListener('click', () => {
+            registerForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+            registerToggle.classList.add('active');
+            loginToggle.classList.remove('active');
+            clearErrors();
+        });
+
+        function clearErrors() {
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('registerError').textContent = '';
+        }
+
+        // Обработка анимации label при заполнении полей
+        document.querySelectorAll('.inputbox input').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.add('has-value');
+                } else {
+                    this.classList.remove('has-value');
+                }
+            });
+
+            // Проверка при загрузке страницы
+            if (input.value.trim() !== '') {
+                input.classList.add('has-value');
+            }
+        });
+
+        // Обработка формы входа
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const errorElement = document.getElementById('loginError');
+            errorElement.textContent = '';
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
             const remember = document.getElementById('remember').checked;
 
             if (!email || !password) {
-                alert('Введите email и пароль');
+                errorElement.textContent = 'Введите email и пароль';
                 return;
             }
 
             try {
-                // очищаем предыдущие сессии
-                localStorage.removeItem('userId');
-                localStorage.removeItem('userEmail');
-                sessionStorage.removeItem('userId');
-                sessionStorage.removeItem('userEmail');
-
-                // Пытаемся войти
                 const loginResponse = await fetch(`${API_BASE_URL}/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -75,37 +139,55 @@
                         sessionStorage.setItem('userEmail', loginData.email);
                     }
                     window.location.href = 'prof.html';
-                    return;
-                }
-
-                // Если авторизация не удалась, пробуем зарегистрировать
-                if (loginResponse.status === 401) {
-                    const registerResponse = await fetch(`${API_BASE_URL}/register`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email, password })
-                    });
-
-                    const registerData = await registerResponse.json();
-
-                    if (registerResponse.ok && registerData.success) {
-                        if (remember) {
-                            localStorage.setItem('userId', registerData.userId);
-                            localStorage.setItem('userEmail', registerData.email);
-                        } else {
-                            sessionStorage.setItem('userId', registerData.userId);
-                            sessionStorage.setItem('userEmail', registerData.email);
-                        }
-                        window.location.href = 'prof.html';
-                    } else {
-                        alert(registerData.error || 'Ошибка регистрации');
-                    }
                 } else {
-                    alert(loginData.error || 'Ошибка входа');
+                    errorElement.textContent = loginData.error || 'Ошибка входа';
                 }
             } catch (error) {
                 console.error('Ошибка:', error);
-                alert('Ошибка подключения к серверу. Убедитесь, что сервер запущен на http://localhost:3000');
+                errorElement.textContent = 'Ошибка подключения к серверу. Убедитесь, что сервер запущен на http://localhost:3000';
+            }
+        });
+
+        // Обработка формы регистрации
+        registerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const errorElement = document.getElementById('registerError');
+            errorElement.textContent = '';
+
+            const username = document.getElementById('registerUsername').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+
+            if (!username || !email || !password) {
+                errorElement.textContent = 'Заполните все поля';
+                return;
+            }
+
+            if (password.length < 6) {
+                errorElement.textContent = 'Пароль должен содержать минимум 6 символов';
+                return;
+            }
+
+            try {
+                const registerResponse = await fetch(`${API_BASE_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, username })
+                });
+
+                const registerData = await registerResponse.json();
+
+                if (registerResponse.ok && registerData.success) {
+                    // Автоматически сохраняем сессию после регистрации
+                    sessionStorage.setItem('userId', registerData.userId);
+                    sessionStorage.setItem('userEmail', registerData.email);
+                    window.location.href = 'prof.html';
+                } else {
+                    errorElement.textContent = registerData.error || 'Ошибка регистрации';
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                errorElement.textContent = 'Ошибка подключения к серверу. Убедитесь, что сервер запущен на http://localhost:3000';
             }
         });
     </script>
@@ -113,6 +195,7 @@
     <!-- Иконки -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="auth-check.js"></script>
     <script src="mobile-menu.js"></script>
 </body>
 </html>

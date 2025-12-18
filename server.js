@@ -96,6 +96,11 @@ app.post('/api/register', async (req, res) => {
   try {
     const passwordHash = hashPassword(password);
     const user = await User.create({ email, password: passwordHash, username: safeUsername });
+    console.log('--- НОВАЯ РЕГИСТРАЦИЯ ---');
+    console.log(`ID: ${user.id_users}`);
+    console.log(`Username: ${user.username}`);
+    console.log(`Email: ${user.email}`);
+    console.log('--------------------------');
     res.json({
       success: true,
       userId: user.id_users,
@@ -124,7 +129,11 @@ app.post('/api/login', async (req, res) => {
     if (!user || !verifyPassword(password, user.password)) {
       return res.status(401).json({ error: 'Неверный email или пароль' });
     }
-
+    console.log('--- УСПЕШНЫЙ ВХОД ---');
+    console.log(`ID: ${user.id_users}`);
+    console.log(`Username: ${user.username}`);
+    console.log(`Email: ${user.email}`);
+    console.log('----------------------');
     res.json({
       success: true,
       userId: user.id_users,
